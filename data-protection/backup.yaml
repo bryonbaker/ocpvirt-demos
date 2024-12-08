@@ -4,7 +4,7 @@ kind: Backup
 metadata:
   # Change this to the desired backup name
   name: backup-fedora02
-  namespace: oadp-user2
+  namespace: oadp-user1
   labels:
     velero.io/storage-location: default
 spec:

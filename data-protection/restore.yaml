@@ -4,7 +4,7 @@ kind: Restore
 metadata:
   # Change this to the desired restore-job name
   name: restore-fedora02
-  namespace: oadp-user2
+  namespace: oadp-user1
 spec:
   # Change this to match the name of the backup
   backupName: backup-fedora02
