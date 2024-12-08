@@ -1,0 +1,18 @@
+---
+apiVersion: velero.io/v1
+kind: Restore
+metadata:
+  # Change this to the desired restore-job name
+  name: restore-fedora02
+  namespace: oadp-user2
+spec:
+  # Change this to match the name of the backup
+  backupName: backup-fedora02
+  includedResources: []
+  excludedResources:
+  - nodes
+  - events
+  - events.events.k8s.io
+  - backups.velero.io
+  - restores.velero.io
+  restorePVs: true
