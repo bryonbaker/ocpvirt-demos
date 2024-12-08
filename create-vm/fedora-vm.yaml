@@ -1,11 +1,11 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: example-vm
+  name: fedora-vm
   annotations:
     description: VM as code example
   labels:
-    app: example-vm
+    app: fedora-vm
     os.template.kubevirt.io/fedora: 'true'
 spec:
   running: true
@@ -16,7 +16,7 @@ spec:
         vm.kubevirt.io/os: fedora
         vm.kubevirt.io/workload: server
       labels:
-        kubevirt.io/domain: example-vm
+        kubevirt.io/domain: fedora-vm
         kubevirt.io/size: small
     spec:
       domain:
@@ -49,7 +49,7 @@ spec:
           type: q35
         memory:
           guest: 2Gi
-      hostname: example-vm
+      hostname: fedora-vm
       networks:
         - name: default
           pod: {}
