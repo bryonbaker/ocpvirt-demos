@@ -1,0 +1,81 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: fedora-ssh-vm
+  annotations:
+    description: VM as code example
+  labels:
+    app: fedora-ssh-vm
+    os.template.kubevirt.io/fedora: 'true'
+spec:
+  running: true
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: small
+        vm.kubevirt.io/os: fedora
+        vm.kubevirt.io/workload: server
+      labels:
+        kubevirt.io/domain: fedora-ssh-vm
+        kubevirt.io/size: small
+    spec:
+      domain:
+        cpu:
+          cores: 1
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: rootdisk
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+          interfaces:
+            - masquerade: {}
+              model: virtio
+              name: default
+          networkInterfaceMultiqueue: true
+          rng: {}
+        features:
+          acpi: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+        machine:
+          type: q35
+        memory:
+          guest: 2Gi
+      hostname: fedora-ssh-vm
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - name: rootdisk
+          containerDisk:
+            image: quay.io/containerdisks/fedora
+        - cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              user: fedora
+              password: fedora
+              chpasswd: { expire: False }
+          name: cloudinitdisk
+      accessCredentials:
+        - sshPublicKey:
+            propagationMethod:
+              noCloud: {}
+            source:
+              secret:
+                secretName: authorised-keys
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authorised-keys
+data:
+  key: c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCZ1FEYXFmMDVnVVYwY3lPRGpxbS9kSGwxaG9MVGNLOGQrSmtrUWpaQmN6aTRwZ2RZWmNwUDFLL3JrbkpmeEliWUdIUnFyS3NWVzVvc2s1a1U2VjUzY3hjTmlMbWJXeXZaSWdhNVRWMFFYY21OUHA4L3BwZFhXL3ByRXpha0ZWME5VN0xVYkJ3NGd3YkxIbmRHRWliUHJEK0txZ0VhaEZnKzVyM1V6dWxtMjZxTm51di9FL25ic2pHbkxuclJ5bDB1SGd1dTM0MmRVYUU3bHBjMWhoOWZlMFh1MkV0Y0FoNnVBQmg5U3R3Q0ZyeGczbjlwcFpXaHR6WDlkanlDOUFCdVhab3F5WStLeVEySVEwUFFJc3lVMzlZN3J0V3k1ODJNWXV1NnBPdU9ncExaeVhydU1SR3VqMUU2ZG9LaXBnQlVHOU9UNDhHWDRkRjF2cWtyOXZzU1FQUHVjdlhEZlc1Wi9KeUNQNGdCdk90QWlpaWlJVTIvcnNUSTJ4UkxGNTN3Q1dWVDVjVEFOOGd4V0hDejNHNkp5SU03SUVNZzh4cnZrT1pYaUQ5TTBNZUQxb21VcWtuMGRMZWhYakNLQkpZeDBISytKclZ3MURqNHJrcHgzQmtjT2VLZzMzdi95YkJwS3BuV2lpOHRxckZxYkl0L2NLSWtNSnRLWEZnU3d5VXBqWmM9IHVzZXJAd29ya3NwYWNlMDcwM2FhODQ2ZmIwNDliOC04NDU3ZDQ0ZDY4LTVkZnJ6Cg==
